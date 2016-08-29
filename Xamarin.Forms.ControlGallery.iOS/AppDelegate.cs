@@ -154,17 +154,8 @@ namespace Xamarin.Forms.ControlGallery.iOS
 
 			var app = new App ();
 
-			var mdp = app.MainPage as MasterDetailPage;
-			var detail = mdp?.Detail as NavigationPage;
-			if (detail != null) {
-				detail.Pushed += (sender, args) => {
-					var nncgPage = args.Page as NestedNativeControlGalleryPage;
-
-					if (nncgPage != null) {
-						AddNativeControls (nncgPage);
-					}
-				};
-			}	
+			MessagingCenter.Subscribe<NestedNativeControlGalleryPage>(this, NestedNativeControlGalleryPage.ReadyForNativeControlsMessage, AddNativeControls);
+			MessagingCenter.Subscribe<Bugzilla40911>(this, Bugzilla40911.ReadyToSetUpTest, SetUp40911Test);
 
 			LoadApplication (app);
 			return base.FinishedLaunching (uiApplication, launchOptions);
@@ -271,6 +262,49 @@ namespace Xamarin.Forms.ControlGallery.iOS
 			// And we'll use the width (which is fine) and substitute our own height
 			return new SizeRequest (new Size (badRect.Width, 20));
 		}
+
+#region Stuff for repro of Bugzilla case 40911
+
+		void SetUp40911Test(Bugzilla40911 page)
+		{
+			var button = new Button { Text = "Start" };
+
+			button.Clicked += (s, e) =>
+			{
+				StartPressed40911();
+			};
+
+			page.Layout.Children.Add(button);
+		}
+
+		public void StartPressed40911 ()
+        {
+			var loginViewController = new UIViewController { View = { BackgroundColor = UIColor.White } };
+			var button = UIButton.FromType (UIButtonType.RoundedRect);
+            button.SetTitle ("Login", UIControlState.Normal);
+#if __UNIFIED__
+            button.Frame = new CoreGraphics.CGRect (20, 100, 200, 44);
+#else
+			button.Frame = new RectangleF (20, 100, 200, 44);
+#endif
+            loginViewController.View.AddSubview (button);
+
+            button.TouchUpInside += (sender, e) => {
+                Xamarin.Forms.Application.Current.MainPage = new ContentPage {Content = new Label {Text = "40911 Success"} };
+                loginViewController.DismissViewController (true, null);
+			};
+
+			var window= UIApplication.SharedApplication.KeyWindow;
+			var vc = window.RootViewController;
+			while (vc.PresentedViewController != null)
+			{
+				vc = vc.PresentedViewController;
+			}
+
+            vc.PresentViewController (loginViewController, true, null);
+		}
+
+#endregion
 	}
 #endif
 }

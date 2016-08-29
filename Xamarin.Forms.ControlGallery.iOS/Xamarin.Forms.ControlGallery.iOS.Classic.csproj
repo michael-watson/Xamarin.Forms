@@ -26,13 +26,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchLink>None</MtouchLink>
     <MtouchDebug>True</MtouchDebug>
-    <MtouchSdkVersion>6.1</MtouchSdkVersion>
+    <MtouchSdkVersion>9.3</MtouchSdkVersion>
     <MtouchProfiling>False</MtouchProfiling>
-    <MtouchExtraArgs />
     <MtouchFastDev>False</MtouchFastDev>
-    <MtouchArch>Default, i386</MtouchArch>
+    <MtouchArch>i386</MtouchArch>
     <MtouchUseLlvm>False</MtouchUseLlvm>
     <MtouchUseThumb>False</MtouchUseThumb>
     <MtouchUseSGen>False</MtouchUseSGen>
@@ -40,8 +39,12 @@
     <MtouchOptimizePNGs>False</MtouchOptimizePNGs>
     <MtouchSdkVersion>7.0</MtouchSdkVersion>
     <MtouchEnableGenericValueTypeSharing>True</MtouchEnableGenericValueTypeSharing>
-    <MtouchI18n />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <MtouchEnableBitcode>False</MtouchEnableBitcode>
+    <OptimizePNGs>True</OptimizePNGs>
+    <MtouchTlsProvider>Default</MtouchTlsProvider>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <MtouchFloat32>False</MtouchFloat32>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -229,4 +232,4 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
- </Project>
+</Project>
