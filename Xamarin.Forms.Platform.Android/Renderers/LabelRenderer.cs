@@ -6,10 +6,64 @@ using Android.Text;
 using Android.Util;
 using Android.Widget;
 using AColor = Android.Graphics.Color;
+using Android.Views;
 
 namespace Xamarin.Forms.Platform.Android
 {
-	public class LabelRenderer : ViewRenderer<Label, TextView>
+    public class FastLabelRenderer : TextView, IVisualElementRenderer
+    {
+        public FastLabelRenderer() : base(Forms.Context)
+        {
+        }
+        public VisualElement Element { get; private set; }
+        public VisualElementTracker Tracker { get; private set; }
+        public ViewGroup ViewGroup { get; private set; } = null;
+        public event EventHandler<VisualElementChangedEventArgs> ElementChanged;
+
+        public global::Android.Views.View NativeView { get; private set; }
+
+        TextView _control;
+
+
+        public SizeRequest GetDesiredSize(int widthConstraint, int heightConstraint)
+        {
+            var context = _control.Context;
+            _control.Measure(MeasureSpecFactory.MakeMeasureSpec(widthConstraint, MeasureSpecMode.AtMost), MeasureSpecFactory.MakeMeasureSpec(_control.MeasuredHeight, MeasureSpecMode.AtMost));
+            return new SizeRequest(new Size(context.FromPixels(_control.MeasuredWidth), context.FromPixels(_control.MeasuredHeight)));
+        }
+
+        public void SetElement(VisualElement element)
+        {
+            var oldElement = Element;
+            var newElement = element;
+            Element = newElement;
+
+            if (oldElement == null)
+            {
+                //unhook old events here
+
+            }
+
+            if (newElement == null)
+            {
+                if (_control == null)
+                {
+                    _control = new TextView(Forms.Context);
+                    Tracker = new VisualElementTracker(this);
+                }
+
+                //hook new events here
+
+            }
+        }
+
+        public void UpdateLayout()
+        {
+            Tracker.UpdateLayout();
+        }
+    }
+
+    public class LabelRenderer : ViewRenderer<Label, TextView>
 	{
 		ColorStateList _labelTextColorDefault;
 		int _lastConstraintHeight;

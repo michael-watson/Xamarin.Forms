@@ -12,7 +12,9 @@ namespace Xamarin.Forms.Platform.Android
 
 		ViewGroup ViewGroup { get; }
 
-		event EventHandler<VisualElementChangedEventArgs> ElementChanged;
+         AView NativeView { get; }
+
+        event EventHandler<VisualElementChangedEventArgs> ElementChanged;
 
 		SizeRequest GetDesiredSize(int widthConstraint, int heightConstraint);
 

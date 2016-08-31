@@ -6,6 +6,7 @@ using Android.Graphics;
 using Android.Views;
 using Android.Widget;
 using AScrollView = Android.Widget.ScrollView;
+using AView = Android.Views.View;
 
 namespace Xamarin.Forms.Platform.Android
 {
@@ -91,8 +92,12 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			get { return this; }
 		}
+        AView IVisualElementRenderer.NativeView
+        {
+            get { return this; }
+        }
 
-		public override void Draw(Canvas canvas)
+        public override void Draw(Canvas canvas)
 		{
 			canvas.ClipRect(canvas.ClipBounds);
 
