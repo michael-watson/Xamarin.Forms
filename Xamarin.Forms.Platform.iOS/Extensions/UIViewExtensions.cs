@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System;
+using static System.String;
+
 #if __UNIFIED__
 using UIKit;
 
@@ -28,26 +30,31 @@ namespace Xamarin.Forms.Platform.iOS
 			return new SizeRequest(request, minimum);
 		}
 
-		public static void SetBinding(this UIView view, string propertyName, BindingBase binding, string updateSourceEventName = null)
+		public static void SetBinding(this UIView view, string propertyName, BindingBase bindingBase, string updateSourceEventName = null)
 		{
-			if (!string.IsNullOrEmpty(updateSourceEventName))
+			var binding = bindingBase as Binding;
+			//This will allow setting bindings from Xaml by reusing the MarkupExtension
+			if (IsNullOrEmpty(updateSourceEventName) && binding != null && !IsNullOrEmpty(binding.UpdateSourceEventName))
+				updateSourceEventName = binding.UpdateSourceEventName;
+
+			if (!IsNullOrEmpty(updateSourceEventName))
 			{
-				NativeBindingHelpers.SetBinding(view, propertyName, binding, updateSourceEventName);
+				NativeBindingHelpers.SetBinding(view, propertyName, bindingBase, updateSourceEventName);
 				return;
 			}
 
 			NativeViewPropertyListener nativePropertyListener = null;
-			if (binding.Mode == BindingMode.TwoWay) {
+			if (bindingBase.Mode == BindingMode.TwoWay) {
 				nativePropertyListener = new NativeViewPropertyListener(propertyName);
 				view.AddObserver(nativePropertyListener, propertyName, 0, IntPtr.Zero);
 			}
 
-			NativeBindingHelpers.SetBinding(view, propertyName, binding, nativePropertyListener);
+			NativeBindingHelpers.SetBinding(view, propertyName, bindingBase, nativePropertyListener);
 		}
 
 		public static void SetBinding(this UIView self, BindableProperty targetProperty, BindingBase binding)
 		{
-			NativeBindingHelpers.SetValue(self, targetProperty, binding);
+			NativeBindingHelpers.SetBinding(self, targetProperty, binding);
 		}
 
 		public static void SetValue(this UIView target, BindableProperty targetProperty, object value)
